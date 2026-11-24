@@ -1,0 +1,11 @@
+{
+  "date": "2026-11-23",
+  "metrics": {
+    "expected_errors": 1.0,
+    "expected_tools": 1.0,
+    "grounded_answers": 1.0,
+    "run_cited": 1.0
+  },
+  "mode": "reference",
+  "run_id": "fc-9eb8b88f44fb"
+}

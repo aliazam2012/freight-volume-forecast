@@ -1,0 +1,72 @@
+{
+  "best_model": "gradient_boosting",
+  "coverage": [
+    {
+      "coverage": 0.834821,
+      "level": 0.8,
+      "model": "gradient_boosting",
+      "relative_width": 0.389761,
+      "rows": 1344
+    },
+    {
+      "coverage": 0.959821,
+      "level": 0.95,
+      "model": "gradient_boosting",
+      "relative_width": 0.693397,
+      "rows": 1344
+    },
+    {
+      "coverage": 0.809524,
+      "level": 0.8,
+      "model": "holt_winters",
+      "relative_width": 0.463034,
+      "rows": 1344
+    },
+    {
+      "coverage": 0.942708,
+      "level": 0.95,
+      "model": "holt_winters",
+      "relative_width": 0.90255,
+      "rows": 1344
+    },
+    {
+      "coverage": 0.740327,
+      "level": 0.8,
+      "model": "seasonal_naive",
+      "relative_width": 0.512976,
+      "rows": 1344
+    },
+    {
+      "coverage": 0.941964,
+      "level": 0.95,
+      "model": "seasonal_naive",
+      "relative_width": 1.0448,
+      "rows": 1344
+    }
+  ],
+  "date": "2026-11-23",
+  "overall": [
+    {
+      "bias": 0.00616,
+      "mase": 0.559368,
+      "model": "gradient_boosting",
+      "rows": 2688,
+      "wape": 0.114177
+    },
+    {
+      "bias": -0.041528,
+      "mase": 0.73828,
+      "model": "holt_winters",
+      "rows": 2688,
+      "wape": 0.150753
+    },
+    {
+      "bias": -0.018362,
+      "mase": 0.878311,
+      "model": "seasonal_naive",
+      "rows": 2688,
+      "wape": 0.178437
+    }
+  ],
+  "run_id": "fc-9eb8b88f44fb"
+}
