@@ -34,6 +34,15 @@ def main(argv: list[str] | None = None) -> int:
     evaluate = commands.add_parser("eval", help="grade the planner agent's golden set")
     evaluate.add_argument("--day", default=date.today().isoformat(), help="report date")
     evaluate.add_argument("--reports", type=Path, default=DEFAULT_EVAL_REPORTS)
+    evaluate.add_argument(
+        "--mode", choices=["reference", "recorded", "record"], default="reference"
+    )
+    evaluate.add_argument(
+        "--cassettes", type=Path, default=Path("apps/volume-forecast/evals/cassettes")
+    )
+    evaluate.add_argument("--model-name", default="claude-opus-5-5")
+    evaluate.add_argument("--max-usd", type=float, default=0.0, help="record: the approved cap")
+    evaluate.add_argument("--limit", type=int, help="record: only the first N questions")
 
     ask = commands.add_parser("ask", help="ask the planner agent a question (live model)")
     ask.add_argument("question")
@@ -46,7 +55,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "eval":
         # The golden set grades the committed reference run, not the local run store.
-        return _evaluate(args.reports, args.day)
+        return _evaluate(args)
     store = RunStore(args.runs)
 
     if args.command == "backtest":
@@ -89,19 +98,38 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
-def _evaluate(reports: Path, day: str) -> int:
+def _evaluate(args: argparse.Namespace) -> int:
+    from freight_agents.evals.recording import StaleCassette
+    from freight_agents.llm import Model
     from freight_agents.volume_forecast.evaluation import (
         FLOORS,
         QUESTIONS,
         load_cases,
+        record,
         reference_deps,
+        run_recorded,
         run_reference,
         write_report,
     )
 
-    deps = reference_deps()
-    result = run_reference(load_cases(QUESTIONS), deps)
-    path = write_report(result, deps, reports, day)
+    deps, cases = reference_deps(), load_cases(QUESTIONS)
+    if args.mode == "record":
+        from freight_agents.llm.anthropic_adapter import AnthropicModel
+
+        def live(case_id: str) -> Model:
+            return AnthropicModel(model=args.model_name, effort="low")
+
+        return record(cases, deps, args.cassettes, live, args.max_usd, args.limit).code
+    try:
+        result = (
+            run_reference(cases, deps)
+            if args.mode == "reference"
+            else run_recorded(cases, deps, args.cassettes, args.model_name)
+        )
+    except StaleCassette as exc:
+        print(f"FAIL {exc}")
+        return 2
+    path = write_report(result, deps, args.reports, args.day)
     for name, value in result.metrics.items():
         print(f"{name}: {value:.2f}")
     failures = result.failures(FLOORS)

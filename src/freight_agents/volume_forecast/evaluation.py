@@ -24,6 +24,7 @@ from freight_agents.agentcore.agent import Agent, Budget
 from freight_agents.agentcore.guards import cap_size
 from freight_agents.agentcore.hooks import HookContext
 from freight_agents.agentcore.tools import ToolRegistry
+from freight_agents.evals.recording import RecordResult, record_cases, replay_model
 from freight_agents.llm import Model, ModelTurn, ScriptedModel, TextPart
 from freight_agents.volume_forecast.grounding import ungrounded
 from freight_agents.volume_forecast.prompts import PLANNER
@@ -150,6 +151,42 @@ def run_reference(cases: list[PlannerCase], deps: ForecastDeps) -> EvalResult:
     return run_suite(cases, deps, scripted, "reference", "reference")
 
 
+def run_recorded(
+    cases: list[PlannerCase], deps: ForecastDeps, cassettes: Path, model_name: str
+) -> EvalResult:
+    """The same questions, tools and grader, answered by a real model's recorded turns."""
+    return run_suite(
+        cases,
+        deps,
+        lambda case: replay_model(case.id, cassettes, model_name),
+        "recorded",
+        model_name,
+    )
+
+
+def record(
+    cases: list[PlannerCase],
+    deps: ForecastDeps,
+    cassettes: Path,
+    live: Callable[[str], Model],
+    cap: float,
+    limit: int | None = None,
+    out: Callable[[str], object] = print,
+) -> RecordResult:
+    """Record a live model answering every question, the tools running for real, under the cap."""
+    by_id = {case.id: case for case in cases}
+    ids = list(by_id)
+    return record_cases(
+        ids[:limit] if limit else ids,
+        lambda case_id, model: grade(by_id[case_id], deps, model),
+        live,
+        cassettes,
+        cap,
+        total=len(ids),
+        out=out,
+    )
+
+
 def write_report(result: EvalResult, deps: ForecastDeps, directory: Path, day: str) -> Path:
     failures = result.failures(FLOORS)
     lines = [
@@ -168,8 +205,13 @@ def write_report(result: EvalResult, deps: ForecastDeps, directory: Path, day: s
         f"Mode: {result.mode}. Forecast run `{deps.run_id}`. Cases: {len(result.per_case)}. "
         f"Gate: {'passed' if not failures else 'failed: ' + '; '.join(failures)}.",
         "",
-        "Reference mode replays scripted answers while the tools run for real: it checks "
-        "the tools, the grader and the gate, not a model.",
+        (
+            "Reference mode replays scripted answers while the tools run for real: it checks "
+            "the tools, the grader and the gate, not a model."
+            if result.mode == "reference"
+            else f"Answers replay the recorded turns of {result.model}; the tools run for real "
+            "and every figure is checked against their results."
+        ),
         "",
         "## Metrics",
         "",
