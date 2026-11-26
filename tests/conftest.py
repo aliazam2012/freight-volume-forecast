@@ -1,4 +1,5 @@
 import pytest
+
 from freight_agents.volume_forecast.evaluation import REFERENCE_RUN
 from freight_agents.volume_forecast.runs import Run, RunStore
 

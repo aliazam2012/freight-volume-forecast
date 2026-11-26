@@ -1,6 +1,13 @@
-# volume-forecast
+# freight-volume-forecast
 
-Daily shipment forecasts for a made-up national carrier, backtested against a seasonal-naive baseline, with prediction ranges whose coverage is measured on data the calibration never saw, and an agent that answers planners' questions only through tools and cites the run its numbers came from.
+[![CI](https://github.com/aliazam2012/freight-volume-forecast/actions/workflows/ci.yml/badge.svg)](https://github.com/aliazam2012/freight-volume-forecast/actions/workflows/ci.yml)
+![Evaluation gate](https://img.shields.io/badge/evaluation%20gate-16%20questions-brightgreen)
+![Python 3.12](https://img.shields.io/badge/python-3.12-blue)
+![License MIT](https://img.shields.io/badge/license-MIT-green)
+
+**Daily freight volume forecasts that beat a seasonal-naive baseline in a rolling-origin backtest, with prediction ranges whose coverage is measured, and a planner agent that can quote only numbers its tools return.**
+
+**Skills shown:** classic machine learning (gradient boosting, Holt-Winters, seasonal-naive) · rolling-origin backtesting with WAPE and MASE · conformal prediction intervals · an agent grounded in tool output, graded so it cannot invent a number · evaluation of 16 planner questions
 
 ## Table of Contents
 
@@ -9,6 +16,7 @@ Daily shipment forecasts for a made-up national carrier, backtested against a se
 - [Run It](#run-it)
 - [The Planner Agent](#the-planner-agent)
 - [Limits](#limits)
+- [Where It Fits](#where-it-fits)
 
 ---
 
@@ -39,7 +47,7 @@ The planner agent's [reference evaluation](evals/reports/2026-11-23-reference.md
 | Runs | `runs.py`, `report.py` | A run id hashes the data, configuration and package version; the same inputs give the same id, and on one machine the same report |
 | Agent | `tools.py`, `prompts.py`, `evaluation.py` | Four read-only tools over one run, a short system prompt, a golden set and a grader |
 
-A test changes every volume after the origin and checks that the model features do not move, which proves no forecast sees the future. [ADR-0008](../../docs/adr/ADR-0008-forecasting-models.md) records why these models and not others.
+A test changes every volume after the origin and checks that the model features do not move, which proves no forecast sees the future. [ADR-0008](docs/adr/ADR-0008-forecasting-models.md) records why these models and not others.
 
 ## Run It
 
@@ -76,3 +84,7 @@ Every tool result, error messages included, names the run id. The grader fails a
 - The backtest windows run 2026-03-22 to 2026-10-31, so the November and December peak is untested.
 - No promotions are announced past the end of the data, so the forward forecast assumes none.
 - The agent's reference evaluation replays scripted answers. A live model's results come with the first recorded run ([issue #10](https://github.com/aliazam2012/freight-agents/issues/10)).
+
+## Where It Fits
+
+Part of a family of freight agents on one [agent runtime](https://github.com/aliazam2012/agent-runtime), which holds the shared model layer, hooks, state engine and evaluation tools.

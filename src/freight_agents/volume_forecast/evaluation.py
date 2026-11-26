@@ -26,11 +26,12 @@ from freight_agents.agentcore.hooks import HookContext
 from freight_agents.agentcore.tools import ToolRegistry
 from freight_agents.evals.recording import RecordResult, record_cases, replay_model
 from freight_agents.llm import Model, ModelTurn, ScriptedModel, TextPart
+from pydantic import BaseModel
+
 from freight_agents.volume_forecast.grounding import ungrounded
 from freight_agents.volume_forecast.prompts import PLANNER
 from freight_agents.volume_forecast.runs import RunStore
 from freight_agents.volume_forecast.tools import ForecastDeps, build_tools
-from pydantic import BaseModel
 
 
 def repo_root() -> Path:
@@ -38,7 +39,7 @@ def repo_root() -> Path:
     return next(p for p in here.parents if (p / "uv.lock").exists())
 
 
-EVALS = repo_root() / "apps" / "volume-forecast" / "evals"
+EVALS = repo_root() / "evals"
 QUESTIONS = EVALS / "questions.jsonl"
 # The run the reference answers were rendered from. Model arithmetic can differ in the last
 # digit between machines, so the golden set grades this committed run, never a rebuilt one.

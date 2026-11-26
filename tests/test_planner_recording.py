@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 from freight_agents.evals.recording import StaleCassette
 from freight_agents.llm import Model, ModelTurn, ScriptedModel, Usage
+
 from freight_agents.volume_forecast.evaluation import (
     FLOORS,
     QUESTIONS,

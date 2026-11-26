@@ -12,9 +12,10 @@ from functools import cached_property
 
 import pandas as pd
 from freight_agents.agentcore.tools import Risk, Tool, tool
+from pydantic import BaseModel
+
 from freight_agents.volume_forecast.data import generate, holiday_names
 from freight_agents.volume_forecast.runs import Run, RunStore, data_hash
-from pydantic import BaseModel
 
 WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 SAME_WEEKDAY_LAST_YEAR = dt.timedelta(days=364)

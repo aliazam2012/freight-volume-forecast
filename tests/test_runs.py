@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+
 from freight_agents.volume_forecast.cli import main
 from freight_agents.volume_forecast.data import generate
 from freight_agents.volume_forecast.report import render

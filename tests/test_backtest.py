@@ -4,6 +4,7 @@ from typing import ClassVar
 import numpy as np
 import pandas as pd
 import pytest
+
 from freight_agents.volume_forecast.backtest import (
     bias,
     mase,

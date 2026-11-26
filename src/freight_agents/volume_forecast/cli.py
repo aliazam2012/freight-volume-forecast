@@ -11,8 +11,8 @@ from freight_agents.volume_forecast.report import write
 from freight_agents.volume_forecast.runs import FORECAST_DAYS, RunStore, build_run, ensure_run
 
 DEFAULT_RUNS = Path("var/forecast/runs")
-DEFAULT_REPORTS = Path("apps/volume-forecast/reports")
-DEFAULT_EVAL_REPORTS = Path("apps/volume-forecast/evals/reports")
+DEFAULT_REPORTS = Path("reports")
+DEFAULT_EVAL_REPORTS = Path("evals/reports")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -37,9 +37,7 @@ def main(argv: list[str] | None = None) -> int:
     evaluate.add_argument(
         "--mode", choices=["reference", "recorded", "record"], default="reference"
     )
-    evaluate.add_argument(
-        "--cassettes", type=Path, default=Path("apps/volume-forecast/evals/cassettes")
-    )
+    evaluate.add_argument("--cassettes", type=Path, default=Path("evals/cassettes"))
     evaluate.add_argument("--model-name", default="claude-opus-5-5")
     evaluate.add_argument("--max-usd", type=float, default=0.0, help="record: the approved cap")
     evaluate.add_argument("--limit", type=int, help="record: only the first N questions")
@@ -101,6 +99,7 @@ def main(argv: list[str] | None = None) -> int:
 def _evaluate(args: argparse.Namespace) -> int:
     from freight_agents.evals.recording import StaleCassette
     from freight_agents.llm import Model
+
     from freight_agents.volume_forecast.evaluation import (
         FLOORS,
         QUESTIONS,
@@ -143,6 +142,7 @@ def _ask(store: RunStore, question: str, kind: str, name: str | None) -> int:
 
     from freight_agents.agentcore.hooks import HookContext
     from freight_agents.llm import Model, TextPart
+
     from freight_agents.volume_forecast.evaluation import planner
     from freight_agents.volume_forecast.tools import ForecastDeps
 

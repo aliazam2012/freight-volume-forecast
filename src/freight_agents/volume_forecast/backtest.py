@@ -19,6 +19,7 @@ from collections.abc import Callable, Sequence
 
 import numpy as np
 import pandas as pd
+
 from freight_agents.volume_forecast.models import Forecaster, future_frame
 
 Factory = Callable[[], Forecaster]

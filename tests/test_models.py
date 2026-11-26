@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+
 from freight_agents.volume_forecast.data import generate
 from freight_agents.volume_forecast.models import (
     GradientBoosting,

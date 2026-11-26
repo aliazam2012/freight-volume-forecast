@@ -245,7 +245,7 @@ SPECS = [
 
 
 def main() -> None:
-    root = Path(__file__).resolve().parents[3]
+    root = Path(__file__).resolve().parents[1]
     store = RunStore(root / "var" / "forecast" / "runs")
     run = ensure_run(store)
     # Commit the exact run the answers describe; the gate grades it on every machine.

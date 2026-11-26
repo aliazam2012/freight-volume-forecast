@@ -21,9 +21,10 @@ from typing import Protocol
 
 import numpy as np
 import pandas as pd
-from freight_agents.volume_forecast.data import holidays
 from sklearn.ensemble import HistGradientBoostingRegressor
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+from freight_agents.volume_forecast.data import holidays
 
 MIN_LAG = 28
 LAGS = (28, 35, 42, 49)

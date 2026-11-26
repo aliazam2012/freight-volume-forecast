@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
+
 from freight_agents.volume_forecast.backtest import origins, run_backtest, summarize
 from freight_agents.volume_forecast.data import generate
 from freight_agents.volume_forecast.intervals import (

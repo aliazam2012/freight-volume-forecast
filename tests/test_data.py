@@ -1,4 +1,5 @@
 import pandas as pd
+
 from freight_agents.volume_forecast.data import BREAK_DATE, BREAK_LANE, generate, holidays
 
 DATA = generate(seed=7)
